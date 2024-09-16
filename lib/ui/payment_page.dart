@@ -42,18 +42,32 @@ class PaymentPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: 12,),
+                    SizedBox(
+                      width: 12,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          transaction.food!.name!,
-                          style: blackFontStyle3,
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 189,
+                          child: Text(
+                            transaction.food!.name!,
+                            style: blackFontStyle3,
+                            maxLines: 1,
+                            overflow: TextOverflow.clip,
+                          ),
                         ),
-                        RatingStars(rate: transaction.food!.rate!,),
+                        RatingStars(
+                          rate: transaction.food!.rate!,
+                        ),
                       ],
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${transaction.quantity} item(s)',
+                        style: greyFontStyle.copyWith(fontSize: 13),
+                        textAlign: TextAlign.end,
+                      ),
                     ),
                   ],
                 ),
