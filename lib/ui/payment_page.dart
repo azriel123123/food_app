@@ -7,8 +7,61 @@ class PaymentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-
+    return GeneralPages(
+      title: 'Payment',
+      subtitle: 'You Deserve Better Meal',
+      onBackButtonPressed: () {
+        Get.back();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(vertical: 12),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Item Orders',
+                  style: blackFontStyle3,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        image: DecorationImage(
+                          image: NetworkImage(transaction.food!.picturePath!),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          transaction.food!.name!,
+                          style: blackFontStyle3,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                        ),
+                        RatingStars(rate: transaction.food!.rate!,),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
