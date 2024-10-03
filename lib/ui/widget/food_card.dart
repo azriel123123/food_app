@@ -7,48 +7,51 @@ class FoodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 200,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 5,
-              spreadRadius: 3,
-              offset: Offset(1, 3)),
-        ],
-      ),
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 140,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(food?.picturePath ?? ''),
-                fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 5,
+                spreadRadius: 3,
+                offset: Offset(1, 3)),
+          ],
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 140,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(food?.picturePath ?? ''),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(12, 12, 12, 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  food?.name ?? 'Ini Makanan',
-                  style: blackFontStyle2,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                RatingStars(
-                  rate: food?.rate,
-                ),
-              ],
+            Container(
+              margin: EdgeInsets.fromLTRB(12, 12, 12, 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    food?.name ?? 'Ini Makanan',
+                    style: blackFontStyle2,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  RatingStars(
+                    rate: food?.rate,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

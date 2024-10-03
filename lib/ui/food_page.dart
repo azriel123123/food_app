@@ -44,7 +44,11 @@ class _FoodPageState extends State<FoodPage> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                        'https://i.pinimg.com/564x/f8/79/02/f8790243808475fdeb1865ecda0baee8.jpg'),
+                      (context.read<UserCubit>().state as UserLoaded)
+                              .user
+                              .picturePath ??
+                          'https://i.pinimg.com/474x/59/f0/d0/59f0d0067c5d04c5db5f92f517767002.jpg${(context.read<UserCubit>().state as UserLoaded).user.name}',
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -56,18 +60,40 @@ class _FoodPageState extends State<FoodPage> {
           height: 220,
           width: double.infinity,
           margin: EdgeInsets.symmetric(vertical: DefaultMargin),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: mockFoods
-                .map((food) => Padding(
-                      padding: EdgeInsets.only(
-                          left: (food == mockFoods.first) ? DefaultMargin : 0,
-                          right: DefaultMargin),
-                      child: FoodCard(
-                        food: food,
-                      ),
-                    ))
-                .toList(),
+          child: BlocBuilder<FoodCubit, FoodState>(
+            builder: (_, state) => (state is FoodLoaded)
+                ? ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: mockFoods
+                        .map((food) => Padding(
+                              padding: EdgeInsets.only(
+                                  left: (food == mockFoods.first)
+                                      ? DefaultMargin
+                                      : 0,
+                                  right: DefaultMargin),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(
+                                    DetailPage(
+                                        onBackButtonPressed: () {
+                                          Get.back();
+                                        },
+                                        transaction: Transaction(
+                                            food: food,
+                                            user: (context
+                                                    .read<UserCubit>()
+                                                    .state as UserLoaded)
+                                                .user)),
+                                  );
+                                },
+                                child: FoodCard(
+                                  food: food,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  )
+                : Center(),
           ),
         ),
         Container(
@@ -89,24 +115,52 @@ class _FoodPageState extends State<FoodPage> {
               SizedBox(
                 height: 20,
               ),
-              Builder(builder: (_) {
-                List<Food> foods = (selectedIndex == 0)
-                    ? mockFoods
-                    : (selectedIndex == 1)
-                        ? []
-                        : [];
+          BlocBuilder<FoodCubit, FoodState>(
+            builder: (_, state) {
+              if (state is FoodLoaded) {
+                List<Food> foods = state.foods
+                    .where((e) => e.types!.contains((selectedIndex != 0)
+                    ? FoodType.new_food
+                    : (selectedIndex != 1)
+                    ? FoodType.popular
+                    : FoodType.recommended))
+                    .toList();
+
                 return Column(
                   children: foods
-                      .map((e) => Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: FoodListItem(
-                            food: e,
-                            itemWidth: listItemWidth,
-                          )))
+                      .map((food) => Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          DetailPage(
+                            onBackButtonPressed: () {
+                              Get.back();
+                            },
+                            transaction: Transaction(
+                              food: food,
+                              user: (context.read<UserCubit>().state as UserLoaded)
+                                  .user,
+                            ),
+                          ),
+                        );
+                      },
+                      child: FoodListItem(
+                        food: food,
+                        itemWidth: listItemWidth,
+                      ),
+                    ),
+                  ))
                       .toList(),
                 );
-              }),
-              SizedBox(
+              } else {
+                return Center(
+                  child: loadingIndicator,
+                );
+              }
+            },
+          ),
+          SizedBox(
                 height: 80,
               ),
             ],

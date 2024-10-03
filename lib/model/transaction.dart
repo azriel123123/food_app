@@ -21,13 +21,13 @@ class Transaction extends Equatable {
       this.user});
 
   Transaction copyWith({
-    required int id,
-    required Food food,
-    required int quantity,
-    required int total,
-    required DateTime datetime,
-    required TransactionStatus status,
-    required User user,
+    int? id,
+    Food? food,
+    int? quantity,
+    int? total,
+    DateTime? dateTime,
+    TransactionStatus? status,
+    User? user,
   }) {
     return Transaction(
       id: id ?? this.id,
@@ -72,6 +72,14 @@ List<Transaction> mockTransaction = [
     total: (mockFoods[3].price! * 7 * 1.1).toInt() + 50000,
     dateTime: DateTime.now(),
     status: TransactionStatus.cancel,
+    user: mockUser,
+  ),Transaction(
+    id:  4,
+    food: mockFoods[5],
+    quantity: 7,
+    total: (mockFoods[5].price! * 5 * 1.1).toInt() + 50000,
+    dateTime: DateTime.now(),
+    status: TransactionStatus.pending,
     user: mockUser,
   ),
 

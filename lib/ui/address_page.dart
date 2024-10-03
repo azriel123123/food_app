@@ -22,7 +22,6 @@ class _AddressPageState extends State<AddressPage> {
       },
       child: Column(
         children: <Widget>[
-          // Gambar
           Container(
             width: 110,
             height: 110,

@@ -1,4 +1,5 @@
 part of 'pages.dart';
+
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
@@ -91,10 +92,7 @@ class _SignInPageState extends State<SignInPage> {
                 horizontal: DefaultMargin,
               ),
               child: isLoading
-                  ? SpinKitFadingCircle(
-                      size: 45,
-                      color: MainColor,
-                    )
+                  ? loadingIndicator
                   : ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: MainColor,
@@ -102,7 +100,50 @@ class _SignInPageState extends State<SignInPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        await context.read<UserCubit>().signIn(
+                              emailController.text,
+                              passwordController.text,
+                            );
+
+                        UserState state = context.read<UserCubit>().state;
+
+                        if (state is UserLoaded) {
+                          context.read<FoodCubit>().getFoods();
+                          context.read<TransactionCubit>().getTransactions();
+                          Get.to(() => MainPage());
+                        } else {
+                          Get.snackbar(
+                            "",
+                            "",
+                            backgroundColor: "D9435E".toColor(),
+                            icon: Icon(
+                              MdiIcons.closeCircleOutline,
+                              color: Colors.white,
+                            ),
+                            titleText: Text(
+                              'Sign In Failed',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            messageText: Text(
+                              'Please Try Again Later',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
+                      },
                       child: Text(
                         'Login',
                         style: blackFontStyle3,
@@ -115,7 +156,7 @@ class _SignInPageState extends State<SignInPage> {
               margin: EdgeInsets.only(top: 12.0),
               padding: EdgeInsets.symmetric(horizontal: DefaultMargin),
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   Get.to(() => SignUpPage());
                 },
                 style: ElevatedButton.styleFrom(
@@ -131,7 +172,8 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ),
               ),
-            ),          ],
+            ),
+          ],
         ),
       ),
     );
