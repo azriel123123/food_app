@@ -53,16 +53,16 @@ class UserServices {
       //   Content-Type => melakukan request dengan format json
       //   Accept => menerima response dengan format json
       },
-      body: {
-        'name': user.name,
-        'email': user.email,
+      body: jsonEncode(<String, String>{
+        'name': user.name!,
+        'email': user.email!,
         'password': password,
         'password_confirmation': password,
-        'address': user.address,
-        'city': user.city,
-        'houseNumber': user.houseNumber,
-        'phoneNumber': user.phoneNumber,
-      },
+        'address': user.address!,
+        'city': user.city!,
+        'houseNumber': user.houseNumber!,
+        'phoneNumber': user.phoneNumber!,
+      },)
     );
 
     if (response.statusCode != 200) {
@@ -71,14 +71,18 @@ class UserServices {
 
     var data = jsonDecode(response.body);
 
-    User.token = data['data']['token'];
+    User.token = data['data']['access_token'];
     User value = User.fromJson(data['data']['user']);
 
     if(pictureFile != null){
       ApiReturnValue<String> result = await uploadPicturePath(pictureFile);
+
+      if(result.value != null){
+        value = value.copyWith(picturePath: "https://food.rtid73.com/storage/${result.value}");
+      }
     }
 
-    return ApiReturnValue();
+    return ApiReturnValue(value: value);
   }
 
   static Future<ApiReturnValue<String>> uploadPicturePath(
