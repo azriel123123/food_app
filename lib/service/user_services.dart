@@ -10,9 +10,7 @@ class UserServices {
     String url = baseURL + '/login';
 
     var response = await client.post(Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: ApiServices.headersPost(),
         body: jsonEncode(
           <String, String>{
             'email': email,
@@ -26,7 +24,7 @@ class UserServices {
 
     var data = jsonDecode(response.body);
 
-    User.token = data['data']['token'];
+    User.token = data['data']['access_token'];
     User value = User.fromJson(data['data']['user']);
     // await Future.delayed(Duration(milliseconds: 500));
 
@@ -46,24 +44,20 @@ class UserServices {
 
     String url = baseURL + '/register';
 
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-      //   Content-Type => melakukan request dengan format json
-      //   Accept => menerima response dengan format json
-      },
-      body: jsonEncode(<String, String>{
-        'name': user.name!,
-        'email': user.email!,
-        'password': password,
-        'password_confirmation': password,
-        'address': user.address!,
-        'city': user.city!,
-        'houseNumber': user.houseNumber!,
-        'phoneNumber': user.phoneNumber!,
-      },)
-    );
+    var response = await http.post(Uri.parse(url),
+        headers: ApiServices.headersGet(),
+        body: jsonEncode(
+          <String, String>{
+            'name': user.name!,
+            'email': user.email!,
+            'password': password,
+            'password_confirmation': password,
+            'address': user.address!,
+            'city': user.city!,
+            'houseNumber': user.houseNumber!,
+            'phoneNumber': user.phoneNumber!,
+          },
+        ));
 
     if (response.statusCode != 200) {
       return ApiReturnValue(message: 'Register Failed, Please Try Again');
@@ -74,19 +68,20 @@ class UserServices {
     User.token = data['data']['access_token'];
     User value = User.fromJson(data['data']['user']);
 
-    if(pictureFile != null){
+    if (pictureFile != null) {
       ApiReturnValue<String> result = await uploadPicturePath(pictureFile);
 
-      if(result.value != null){
-        value = value.copyWith(picturePath: "https://food.rtid73.com/storage/${result.value}");
+      if (result.value != null) {
+        value = value.copyWith(
+            picturePath: "https://food.rtid73.com/storage/${result.value}");
       }
     }
 
     return ApiReturnValue(value: value);
   }
 
-  static Future<ApiReturnValue<String>> uploadPicturePath(
-      File pictureFile, {http.MultipartRequest? request}) async {
+  static Future<ApiReturnValue<String>> uploadPicturePath(File pictureFile,
+      {http.MultipartRequest? request}) async {
     String url = baseURL + '/user/photo';
 
     var uri = Uri.parse(url);
@@ -104,8 +99,7 @@ class UserServices {
 
     var response = await request.send();
 
-    if(response.statusCode == 200){
-
+    if (response.statusCode == 200) {
       String responseBody = await response.stream.bytesToString();
 
       var data = jsonDecode(responseBody);
@@ -116,6 +110,24 @@ class UserServices {
     } else {
       return ApiReturnValue(message: 'Upload Picture failed, Please Try Again');
     }
+  }
+
+  static Future<ApiReturnValue<bool>> logout({http.Client? client}) async {
+
+    client ??= http.Client();
+
+    String url = '$baseURL/logout';
+    print('URL Logout : $url');
+
+    var response = await client.post(Uri.parse(url), headers: ApiServices.headersPost(token: User.token));
+
+    print("Response Logout : ${response.body}");
+
+    if(response.statusCode != 200){
+      return ApiReturnValue(message: 'Logout Failed');
+    }
+
+    return ApiReturnValue(value: true);
 
   }
 }

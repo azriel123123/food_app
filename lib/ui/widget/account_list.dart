@@ -34,7 +34,10 @@ class AccountList extends StatelessWidget {
         ListTile(
           title: Text('Sign Out'),
           trailing: Icon(Icons.arrow_forward_ios),
-          onTap: () {},
+          onTap: () {
+            context.read<UserCubit>().signOut();
+            Get.to(SignInPage());
+          },
         ),
       ],
     );

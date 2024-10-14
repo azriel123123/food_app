@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:supercharged/supercharged.dart';
 
 part 'food.dart';
 part 'transaction.dart';

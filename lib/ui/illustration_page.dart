@@ -49,14 +49,19 @@ class IllustrationPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: MainColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                buttonTap1();
+              },
               child: Text(buttonTitle1),
             ),
             (buttonTap2 == null)
                 ? SizedBox()
-                : ElevatedButton(onPressed: (){
-                  buttonTap2!();
-            }, child: Text('Go To Home Page'),),
+                : ElevatedButton(
+                    onPressed: () {
+                      buttonTap2!();
+                    },
+                    child: Text('Go To Home Page'),
+                  ),
           ],
         ),
       ),

@@ -10,15 +10,18 @@ class Transaction extends Equatable {
   final DateTime? dateTime;
   final TransactionStatus? status;
   final User? user;
+  final String? payment_url;
 
-  Transaction(
-      {this.id,
-      this.food,
-      this.quantity,
-      this.total,
-      this.dateTime,
-      this.status,
-      this.user});
+  Transaction({
+    this.id,
+    this.food,
+    this.quantity,
+    this.total,
+    this.dateTime,
+    this.status,
+    this.user,
+    this.payment_url,
+  });
 
   Transaction copyWith({
     int? id,
@@ -40,6 +43,22 @@ class Transaction extends Equatable {
     );
   }
 
+  factory Transaction.fromJson(Map<String, dynamic> data) => Transaction(
+      id: data['id'],
+      food: Food.fromJson(data['food']),
+      quantity: data['quantity'],
+      total: data['total'],
+      dateTime: DateTime.fromMillisecondsSinceEpoch(data['created_at']),
+      user: User.fromJson(data['user']),
+      payment_url: data['payment_url'],
+      status: data['status'] == 'PENDING'
+          ? TransactionStatus.pending
+          : data['status'] == 'ON_DELIVERY'
+              ? TransactionStatus.on_delivery
+              : data['status'] == 'CANCELED'
+                  ? TransactionStatus.cancel
+                  : TransactionStatus.delivered);
+
   @override
   // TODO: implement props
   List<Object?> get props =>
@@ -48,7 +67,7 @@ class Transaction extends Equatable {
 
 List<Transaction> mockTransaction = [
   Transaction(
-    id:  1,
+    id: 1,
     food: mockFoods[1],
     quantity: 5,
     total: (mockFoods[1].price! * 5 * 1.1).toInt() + 50000,
@@ -57,7 +76,7 @@ List<Transaction> mockTransaction = [
     user: mockUser,
   ),
   Transaction(
-    id:  2,
+    id: 2,
     food: mockFoods[2],
     quantity: 10,
     total: (mockFoods[2].price! * 10 * 1.1).toInt() + 50000,
@@ -66,15 +85,16 @@ List<Transaction> mockTransaction = [
     user: mockUser,
   ),
   Transaction(
-    id:  3,
+    id: 3,
     food: mockFoods[3],
     quantity: 7,
     total: (mockFoods[3].price! * 7 * 1.1).toInt() + 50000,
     dateTime: DateTime.now(),
     status: TransactionStatus.cancel,
     user: mockUser,
-  ),Transaction(
-    id:  4,
+  ),
+  Transaction(
+    id: 4,
     food: mockFoods[5],
     quantity: 7,
     total: (mockFoods[5].price! * 5 * 1.1).toInt() + 50000,
@@ -82,5 +102,4 @@ List<Transaction> mockTransaction = [
     status: TransactionStatus.pending,
     user: mockUser,
   ),
-
 ];

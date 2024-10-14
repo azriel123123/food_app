@@ -9,6 +9,18 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage> {
   int selectedIndex = 0;
+
+  @override
+  void initState(){
+    context.read<FoodCubit>().getFoods();
+    super.initState();
+  }
+
+  void onRefresh(){
+    context.read<FoodCubit>().getFoods();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     double listItemWidth =
@@ -64,10 +76,10 @@ class _FoodPageState extends State<FoodPage> {
             builder: (_, state) => (state is FoodLoaded)
                 ? ListView(
                     scrollDirection: Axis.horizontal,
-                    children: mockFoods
+                    children: state.foods
                         .map((food) => Padding(
                               padding: EdgeInsets.only(
-                                  left: (food == mockFoods.first)
+                                  left: (food == state.foods.first)
                                       ? DefaultMargin
                                       : 0,
                                   right: DefaultMargin),
@@ -143,7 +155,9 @@ class _FoodPageState extends State<FoodPage> {
                                   .user,
                             ),
                           ),
-                        );
+                        )!.then((value){
+                          onRefresh();
+                        });
                       },
                       child: FoodListItem(
                         food: food,
