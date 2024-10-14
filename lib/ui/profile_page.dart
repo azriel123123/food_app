@@ -34,7 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: NetworkImage(
+                      image: NetworkImage((context.read<UserCubit>().state
+                                  as UserLoaded)
+                              .user
+                              .picturePath ??
                           'https://i.pinimg.com/736x/45/03/1d/45031d731b1038a6a1726201cb2c0eec.jpg'),
                       fit: BoxFit.cover,
                     ),
@@ -45,8 +48,14 @@ class _ProfilePageState extends State<ProfilePage> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(mockUser.name!, style: blackFontStyle1),
-                  Text(mockUser.email!, style: blackFontStyle2),
+                  Text((context.read<UserCubit>().state as UserLoaded)
+                          .user
+                          .name ??
+                      'name'),
+                  Text((context.read<UserCubit>().state as UserLoaded)
+                          .user
+                          .email ??
+                      'email'),
                 ],
               ),
             ],

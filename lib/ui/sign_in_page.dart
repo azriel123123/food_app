@@ -101,6 +101,32 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                       ),
                       onPressed: () async {
+
+                        if(emailController.text == "" || passwordController.text == ""){
+                          Get.snackbar(
+                            "",
+                            "",
+                            backgroundColor: "D9435E".toColor(),
+                            icon: Icon(
+                              MdiIcons.closeCircleOutline,
+                              color: Colors.white,
+                            ),
+                            titleText: Text(
+                              'Sign In Failed',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            messageText: Text(
+                              'Please Try Again Later',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        }
+
                         setState(() {
                           isLoading = true;
                         });
